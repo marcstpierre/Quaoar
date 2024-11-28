@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/faaq
+    username: marc
+    password: ma71st49
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        boot:
+          allow_jdbc_metadata_access: false
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: Ov23lisMazxqFoAyAIRA
+            clientSecret: fcc5366ddae97b09bf9bd513c2b04e6f524c47f8
+          google:
+            client-id: <client-id>
+            client-secret: <secret>
+#    mail:
+#      host: smtp.gmail.com
+#      port: 587
+#      username: <login user to smtp server>
+#      password: <login password to smtp server>
+#      properties:
+#        mail:
+#          smtp:
+#            auth: true
+#            starttls:
+#              enable: true
+#        # Disable Hibernate usage of JDBC metadata
+#        spring.jpa.properties.hibernate.boot.allow_jdbc_metadata_access=false
+
+        # Database initialization should typically be performed outside of Spring lifecycle
+  sql:
+    init:
+      mode: always

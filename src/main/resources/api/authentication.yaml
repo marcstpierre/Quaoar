@@ -1,0 +1,300 @@
+openapi: "3.0.2"
+info:
+  title: API Title
+  version: "1.0"
+servers:
+  - url: https://localhost:8080/v1
+paths:
+  /authenticate:
+    post:
+      security:
+        - ApiKeyAuth: [ ]
+      summary : vérifie les credentials d'un usager avec l'adresse de courriel et de son mot de
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Authentication'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Authentication'
+          text/plain:
+            schema:
+              $ref: '#/components/schemas/Authentication'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationDto'
+  /createAccount:
+    post:
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        description: La paires username/password
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Authentication'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Authentication'
+          text/plain:
+            schema:
+              $ref: '#/components/schemas/Authentication'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultDto'
+        201:
+          description: Le compte existe déjà
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultDto'
+  /saveAccount:
+    post:
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+  /confirmMember/{token}:
+    get:
+      #      security:
+      #        - ApiKeyAuth: [ ]
+      parameters:
+        - name: token
+          schema:
+            type:
+              string
+          in: path
+          required: true
+          description: Token qui permet l'action
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultDto'
+        400:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultDto'
+  /Account/{accountId}:
+    get:
+      #      security:
+      #        - ApiKeyAuth: [ ]
+      parameters:
+        - name: accountId
+          schema:
+            type:
+              integer
+          in: path
+          required: true
+          description: Id du compte
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDto'
+        400:
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultDto'
+  /member/{memberId}/save:
+    post:
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: memberId
+          schema:
+            type: integer
+          in: path
+          required: true
+          description: Id du memmbre
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberDto'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDto'
+  /member/{memberId}:
+    get:
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - name: memberId
+          schema:
+            type: integer
+          in: path
+          required: true
+          description: id du membre
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDto'
+        400:
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultDto'
+
+components:
+  securitySchemes:
+    ApiKeyAuth: # arbitrary name for the security scheme
+      type: apiKey
+      in: header       # can be "header", "query" or "cookie"
+      name: X-API-KEY  # name of the header, query parameter or cookie
+  schemas:
+    Authentication:
+      type: object   # Data type
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    AuthenticationDto:
+      type: object
+      properties:
+        token:
+          type: string
+        id:
+          type: integer
+    AccountResetDto:
+      type: object
+      properties:
+        url:
+          type: string
+    AccountDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        token:
+          type: string
+        lastModifDate:
+          $ref: '#/components/schemas/DateDto'
+        email:
+          type: string
+        owner:
+          $ref: '#/components/schemas/MemberDto'
+        comembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberDto'
+    MemberDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        lastModifDate:
+          $ref: '#/components/schemas/DateDto'
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
+          $ref: '#/components/schemas/DateDto'
+        gender:
+          type: string
+        phone:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneDto'
+        address:
+          $ref: '#/components/schemas/AddressDto'
+    ClubDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        address:
+          $ref: '#/components/schemas/AddressDto'
+    Membership:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        
+    DateDto:
+      type: string
+      pattern: /([0-9]{2})-(?:[0-9]{2})-([0-9]{4})/
+      example: "17-02-2010"
+    AddressDto:
+      type: object
+      properties:
+        number:
+          type: integer
+        street:
+          type: string
+        secondLine:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        country:
+          type: string
+        codePostal:
+          type: string
+    PhoneDto:
+      type: object
+      properties:
+        number:
+          type: string
+          pattern: /([0-9]{3})-(?:[0-9]{3})-([0-9]{4})/
+          example: "438-508-2271"
+    ResultDto:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        topic:
+          type: string
+        url:
+          type: string
+security:
+  - ApiKeyAuth: []     # use the same name as under securitySchemes

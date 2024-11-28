@@ -1,0 +1,135 @@
+type Query {
+    getMemberById(id: ID): MemberDto
+    getAccountByMemberId(member_id: ID): AccountDto
+    getMembershipByMemberId(member_id: ID): [MembershipDto]
+}
+
+type MemberDto {
+    id: ID
+    firstName : String
+    lastName : String
+    address: AddressDto
+    gender: Gender
+    email: String
+    membership: [MembershipDto]
+    }
+
+enum Gender {
+    MALE
+    FEMALE
+    UNSPECIFIED
+}
+type AccountDto {
+    id: ID
+    members: [MemberDto]
+    billingAddress: AddressDto
+    }
+type MembershipDto {
+    id: ID!
+    membershipType: MembershipTypeDto!
+    name: String!
+    price: Float!
+    installments : [InstallmentDto]
+    membershipStartDate: Int
+    membershipEndDate: Int
+}
+type MembershipTypeDto {
+    id: ID!
+    club: ClubDto!
+    name: String!
+    price: Float!
+    duration: DurationEnum
+    installments : [InstallmentDto]
+    availabilityStartDate: Int
+    availabilityEndDate: Int
+}
+enum DurationEnum {
+    ANNUALLY
+    MONTHLY
+}
+type ClubDto {
+    id: ID
+    name: String
+    address: AddressDto
+    federation: FederationStatus
+    }
+type FederationDto {
+    id: ID
+    name: String
+    address: AddressDto
+    }
+type FederationStatus {
+    id: ID
+    federation: FederationDto
+    status: String
+}
+type EventDto {
+    id: ID
+    name: String
+    address: AddressDto
+    eventStartDate: Int
+    eventEndDate: Int
+    details: String
+    eventType: EventType!
+}
+enum EventType {
+       CONFERENCE
+       COURSE
+       MEETING
+     }
+type MessageDto {
+    id: ID
+    issuingDate: Int
+    message: String
+    issuer: MemberDto
+}
+type NotificationDto {
+    id: ID
+    notificationType: NotificationType!
+}
+
+enum NotificationType {
+    BILLING
+}
+type AddressDto {
+    number: String
+    street: String
+    city: String
+    province: Province
+    country: Country
+    postalCode: String
+}
+enum Province  {
+    QUEBEC
+    ONTARIO
+    NEWBRUNSWICK
+}
+enum Country  {
+    CANADA
+    USA
+}
+
+type PhoneNumberDto {
+    type: PhoneType
+    number: Int
+}
+enum PhoneType  {
+    MOBILE
+    FIX
+}
+type PaymentMethodDto {
+    type: PaymentMethodType
+    fullName: String
+    cardNumber: String
+    issuerToken: String
+}
+enum PaymentMethodType {
+    DEBIT
+    CREDIT
+    BANK
+    CHECKING
+}
+type InstallmentDto {
+    date: Int
+    amount: Float
+}
